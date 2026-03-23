@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xitoy Tili So'z Testi - 汉语单词测试</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&family=Poppins:wght@400;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', 'Noto Sans SC', sans-serif;
+            background-color: #f0f4f8;
+        }
+
+        .progress-bar {
+            transition: width 0.3s ease-in-out;
+        }
+
+        .speak-btn:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    <!-- Header -->
+    <header class="w-full max-w-2xl text-center mb-8">
+        <h1 class="text-3xl font-bold text-blue-800 flex items-center justify-center gap-3">
+            <!-- 方形中国国旗 SVG -->
+            <svg width="45" height="30" viewBox="0 0 30 20" class="drop-shadow-md rounded-sm">
+                <rect width="30" height="20" fill="#EE1C25" />
+                <!-- 大星 -->
+                <path d="M5 8l1.763.573L5 10.146l.673-2.073L4 6.727h2.1l.673-2.073.673 2.073H9.5l-1.673 1.346.673 2.073z" fill="#FFFF00" transform="translate(-1, -1.5) scale(1.2)" />
+                <!-- 小星 1 -->
+                <path d="M10 3l.353.115-.135.415.135-.415-.415-.135.42-.115.135-.415.135.415.42.115-.34.27.135.415-.35-.27-.35.27.135-.415z" fill="#FFFF00" transform="rotate(-30, 10, 3)" />
+                <!-- 小星 2 -->
+                <path d="M12 5l.353.115-.135.415.135-.415-.415-.135.42-.115.135-.415.135.415.42.115-.34.27.135.415-.35-.27-.35.27.135-.415z" fill="#FFFF00" transform="rotate(-15, 12, 5)" />
+                <!-- 小星 3 -->
+                <path d="M12 8l.353.115-.135.415.135-.415-.415-.135.42-.115.135-.415.135.415.42.115-.34.27.135.415-.35-.27-.35.27.135-.415z" fill="#FFFF00" />
+                <!-- 小星 4 -->
+                <path d="M10 10l.353.115-.135.415.135-.415-.415-.135.42-.115.135-.415.135.415.42.115-.34.27.135.415-.35-.27-.35.27.135-.415z" fill="#FFFF00" transform="rotate(15, 10, 10)" />
+            </svg>
+            Xitoy Tili Testi
+        </h1>
+        <p class="text-blue-600 font-medium mt-2">Dilfuza Kāng lǎo shī bilan xitoy tilini o'rganmiz</p>
+    </header>
+
+    <!-- Main Content -->
+    <main id="app" class="w-full max-w-2xl bg-white rounded-3xl shadow-xl overflow-hidden">
+        
+        <!-- Score & Progress -->
+        <div class="px-6 pt-6">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-semibold text-blue-600" id="progress-text">Savol: 1/40</span>
+                <span class="text-sm font-semibold text-green-600" id="score-text">To'g'ri: 0</span>
+            </div>
+            <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                <div id="progress-bar" class="progress-bar h-full bg-blue-500" style="width: 2.5%"></div>
+            </div>
+        </div>
+
+        <!-- Quiz Area -->
+        <div id="quiz-container" class="p-8 flex flex-col items-center">
+            
+            <!-- Chinese Word Display -->
+            <div class="mb-6 text-center">
+                <div id="chinese-word" class="text-7xl font-bold text-gray-800 mb-2">你</div>
+                <div id="pinyin" class="text-xl text-blue-500 font-medium mb-4">nǐ</div>
+                
+                <!-- 发音按钮 -->
+                <button onclick="speakCurrentWord()" class="speak-btn bg-blue-50 hover:bg-blue-100 p-3 rounded-full transition-all duration-200 text-blue-600" title="Talaffuzni tinglash">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Options Grid -->
+            <div id="options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                <!-- Buttons will be injected here -->
+            </div>
+
+            <!-- Result Overlay -->
+            <div id="feedback" class="mt-6 text-lg font-bold hidden"></div>
+        </div>
+
+        <!-- Completion Screen (Hidden by default) -->
+        <div id="completion-screen" class="hidden p-12 text-center">
+            <svg class="mx-auto w-24 h-24 text-green-500 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Tugallandi!</h2>
+            <p id="final-score" class="text-xl text-gray-600 mb-8">Sizning natijangiz: 0 / 40</p>
+            <button onclick="resetQuiz()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl transition-colors">
+                Qayta boshlash
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-gray-500 text-sm text-center">
+        © 2026 Dilfuza Kāng lǎo shī (telegram@diffila)
+    </footer>
+
+    <script>
+        const vocabulary = [
+            { zh: "你", py: "nǐ", uz: "sen" },
+            { zh: "我", py: "wǒ", uz: "men" },
+            { zh: "她", py: "tā", uz: "u (ayol)" },
+            { zh: "他", py: "tā", uz: "u (erkak)" },
+            { zh: "叫", py: "jiào", uz: "atalmoq / ismi... bo'lmoq" },
+            { zh: "什么", py: "shénme", uz: "nima" },
+            { zh: "名字", py: "míngzi", uz: "ism" },
+            { zh: "很", py: "hěn", uz: "juda" },
+            { zh: "高兴", py: "gāoxìng", uz: "xursand" },
+            { zh: "认识", py: "rènshi", uz: "tanimoq / tanishmoq" },
+            { zh: "哪", py: "nǎ", uz: "qaysi" },
+            { zh: "国", py: "guó", uz: "davlat / mamlakat" },
+            { zh: "人", py: "rén", uz: "inson / odam" },
+            { zh: "一", py: "yī", uz: "bir" },
+            { zh: "二", py: "èr", uz: "ikki" },
+            { zh: "三", py: "sān", uz: "uch" },
+            { zh: "四", py: "sì", uz: "to'rt" },
+            { zh: "五", py: "wǔ", uz: "besh" },
+            { zh: "六", py: "liù", uz: "olti" },
+            { zh: "七", py: "qī", uz: "yetti" },
+            { zh: "八", py: "bā", uz: "sakkiz" },
+            { zh: "九", py: "jiǔ", uz: "to'qqiz" },
+            { zh: "十", py: "shí", uz: "o'n" },
+            { zh: "好", py: "hǎo", uz: "yaxshi" },
+            { zh: "对不起", py: "duìbuqǐ", uz: "kechirasiz / uzr" },
+            { zh: "没关系", py: "méiguānxi", uz: "hechqisi yo'q" },
+            { zh: "谢谢", py: "xièxie", uz: "rahmat" },
+            { zh: "再见", py: "zàijiàn", uz: "xayr" },
+            { zh: "中国", py: "zhōngguó", uz: "Xitoy" },
+            { zh: "美国", py: "měiguó", uz: "Amerika" },
+            { zh: "老师", py: "lǎoshī", uz: "o'qituvchi" },
+            { zh: "学生", py: "xuésheng", uz: "talaba / o'quvchi" },
+            { zh: "中国人", py: "zhōngguó rén", uz: "xitoylik" },
+            { zh: "美国人", py: "měiguó rén", uz: "amerikalik" },
+            { zh: "是", py: "shì", uz: "bo'lmoq (to be)" },
+            { zh: "吗", py: "ma", uz: "so'roq yuklamasi" },
+            { zh: "的", py: "de", uz: "qaratqich kelishigi qo'shimchasi" },
+            { zh: "们", py: "men", uz: "ko'plik qo'shimchasi" },
+            { zh: "谁", py: "shuí", uz: "kim" }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let shuffledVocab = [];
+
+        // 发音功能
+        function speakCurrentWord() {
+            if ('speechSynthesis' in window) {
+                const text = shuffledVocab[currentIndex].zh;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'zh-CN'; // 设置为中文
+                utterance.rate = 0.8;    // 语速稍慢一点方便听清
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function initQuiz() {
+            shuffledVocab = [...vocabulary].sort(() => Math.random() - 0.5);
+            currentIndex = 0;
+            score = 0;
+            updateUI();
+        }
+
+        function updateUI() {
+            if (currentIndex >= shuffledVocab.length) {
+                showCompletion();
+                return;
+            }
+
+            const current = shuffledVocab[currentIndex];
+            document.getElementById('chinese-word').textContent = current.zh;
+            document.getElementById('pinyin').textContent = current.py;
+            document.getElementById('progress-text').textContent = `Savol: ${currentIndex + 1}/${shuffledVocab.length}`;
+            document.getElementById('score-text').textContent = `To'g'ri: ${score}`;
+            document.getElementById('progress-bar').style.width = `${((currentIndex + 1) / shuffledVocab.length) * 100}%`;
+
+            generateOptions(current.uz);
+        }
+
+        function generateOptions(correctAnswer) {
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            
+            let others = vocabulary
+                .filter(v => v.uz !== correctAnswer)
+                .map(v => v.uz);
+            
+            // Unique wrong answers
+            others = [...new Set(others)].sort(() => Math.random() - 0.5).slice(0, 3);
+            
+            let options = [correctAnswer, ...others].sort(() => Math.random() - 0.5);
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "p-4 border-2 border-gray-100 rounded-xl hover:bg-blue-50 hover:border-blue-300 transition-all text-gray-700 font-medium text-lg text-center shadow-sm";
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(opt, correctAnswer, btn);
+                grid.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected, correct, element) {
+            const allBtns = document.querySelectorAll('#options-grid button');
+            allBtns.forEach(btn => btn.disabled = true);
+
+            if (selected === correct) {
+                score++;
+                element.classList.remove('border-gray-100');
+                element.classList.add('bg-green-100', 'border-green-500', 'text-green-700');
+            } else {
+                element.classList.remove('border-gray-100');
+                element.classList.add('bg-red-100', 'border-red-500', 'text-red-700');
+                allBtns.forEach(btn => {
+                    if (btn.textContent === correct) {
+                        btn.classList.add('bg-green-100', 'border-green-500', 'text-green-700');
+                    }
+                });
+            }
+
+            setTimeout(() => {
+                currentIndex++;
+                updateUI();
+            }, 1200);
+        }
+
+        function showCompletion() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('completion-screen').classList.remove('hidden');
+            document.getElementById('final-score').textContent = `Sizning natijangiz: ${score} / ${shuffledVocab.length}`;
+        }
+
+        function resetQuiz() {
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('completion-screen').classList.add('hidden');
+            initQuiz();
+        }
+
+        window.onload = initQuiz;
+    </script>
+</body>
+</html>
