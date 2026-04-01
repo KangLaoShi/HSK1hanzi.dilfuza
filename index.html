@@ -30,15 +30,10 @@
             <!-- 方形中国国旗 SVG -->
             <svg width="45" height="30" viewBox="0 0 30 20" class="drop-shadow-md rounded-sm">
                 <rect width="30" height="20" fill="#EE1C25" />
-                <!-- 大星 -->
                 <path d="M5 8l1.763.573L5 10.146l.673-2.073L4 6.727h2.1l.673-2.073.673 2.073H9.5l-1.673 1.346.673 2.073z" fill="#FFFF00" transform="translate(-1, -1.5) scale(1.2)" />
-                <!-- 小星 1 -->
                 <path d="M10 3l.353.115-.135.415.135-.415-.415-.135.42-.115.135-.415.135.415.42.115-.34.27.135.415-.35-.27-.35.27.135-.415z" fill="#FFFF00" transform="rotate(-30, 10, 3)" />
-                <!-- 小星 2 -->
                 <path d="M12 5l.353.115-.135.415.135-.415-.415-.135.42-.115.135-.415.135.415.42.115-.34.27.135.415-.35-.27-.35.27.135-.415z" fill="#FFFF00" transform="rotate(-15, 12, 5)" />
-                <!-- 小星 3 -->
                 <path d="M12 8l.353.115-.135.415.135-.415-.415-.135.42-.115.135-.415.135.415.42.115-.34.27.135.415-.35-.27-.35.27.135-.415z" fill="#FFFF00" />
-                <!-- 小星 4 -->
                 <path d="M10 10l.353.115-.135.415.135-.415-.415-.135.42-.115.135-.415.135.415.42.115-.34.27.135.415-.35-.27-.35.27.135-.415z" fill="#FFFF00" transform="rotate(15, 10, 10)" />
             </svg>
             Xitoy Tili Testi
@@ -63,14 +58,13 @@
         <!-- Quiz Area -->
         <div id="quiz-container" class="p-8 flex flex-col items-center">
             
-            <!-- Chinese Word Display -->
-            <div class="mb-6 text-center">
-                <div id="chinese-word" class="text-7xl font-bold text-gray-800 mb-2">你</div>
-                <div id="pinyin" class="text-xl text-blue-500 font-medium mb-4">nǐ</div>
+            <!-- Chinese Word Display (Removed Pinyin) -->
+            <div class="mb-10 text-center">
+                <div id="chinese-word" class="text-8xl font-bold text-gray-800 mb-6">你</div>
                 
                 <!-- 发音按钮 -->
-                <button onclick="speakCurrentWord()" class="speak-btn bg-blue-50 hover:bg-blue-100 p-3 rounded-full transition-all duration-200 text-blue-600" title="Talaffuzni tinglash">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <button onclick="speakCurrentWord()" class="speak-btn bg-blue-50 hover:bg-blue-100 p-4 rounded-full transition-all duration-200 text-blue-600 shadow-sm" title="Talaffuzni tinglash">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                         <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
                         <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
@@ -82,12 +76,9 @@
             <div id="options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                 <!-- Buttons will be injected here -->
             </div>
-
-            <!-- Result Overlay -->
-            <div id="feedback" class="mt-6 text-lg font-bold hidden"></div>
         </div>
 
-        <!-- Completion Screen (Hidden by default) -->
+        <!-- Completion Screen -->
         <div id="completion-screen" class="hidden p-12 text-center">
             <svg class="mx-auto w-24 h-24 text-green-500 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -107,45 +98,45 @@
 
     <script>
         const vocabulary = [
-            { zh: "你", py: "nǐ", uz: "sen" },
-            { zh: "我", py: "wǒ", uz: "men" },
-            { zh: "她", py: "tā", uz: "u (ayol)" },
-            { zh: "他", py: "tā", uz: "u (erkak)" },
-            { zh: "叫", py: "jiào", uz: "atalmoq / ismi... bo'lmoq" },
-            { zh: "什么", py: "shénme", uz: "nima" },
-            { zh: "名字", py: "míngzi", uz: "ism" },
-            { zh: "很", py: "hěn", uz: "juda" },
-            { zh: "高兴", py: "gāoxìng", uz: "xursand" },
-            { zh: "认识", py: "rènshi", uz: "tanimoq / tanishmoq" },
-            { zh: "哪", py: "nǎ", uz: "qaysi" },
-            { zh: "国", py: "guó", uz: "davlat / mamlakat" },
-            { zh: "人", py: "rén", uz: "inson / odam" },
-            { zh: "一", py: "yī", uz: "bir" },
-            { zh: "二", py: "èr", uz: "ikki" },
-            { zh: "三", py: "sān", uz: "uch" },
-            { zh: "四", py: "sì", uz: "to'rt" },
-            { zh: "五", py: "wǔ", uz: "besh" },
-            { zh: "六", py: "liù", uz: "olti" },
-            { zh: "七", py: "qī", uz: "yetti" },
-            { zh: "八", py: "bā", uz: "sakkiz" },
-            { zh: "九", py: "jiǔ", uz: "to'qqiz" },
-            { zh: "十", py: "shí", uz: "o'n" },
-            { zh: "好", py: "hǎo", uz: "yaxshi" },
-            { zh: "对不起", py: "duìbuqǐ", uz: "kechirasiz / uzr" },
-            { zh: "没关系", py: "méiguānxi", uz: "hechqisi yo'q" },
-            { zh: "谢谢", py: "xièxie", uz: "rahmat" },
-            { zh: "再见", py: "zàijiàn", uz: "xayr" },
-            { zh: "中国", py: "zhōngguó", uz: "Xitoy" },
-            { zh: "美国", py: "měiguó", uz: "Amerika" },
-            { zh: "老师", py: "lǎoshī", uz: "o'qituvchi" },
-            { zh: "学生", py: "xuésheng", uz: "talaba / o'quvchi" },
-            { zh: "中国人", py: "zhōngguó rén", uz: "xitoylik" },
-            { zh: "美国人", py: "měiguó rén", uz: "amerikalik" },
-            { zh: "是", py: "shì", uz: "bo'lmoq (to be)" },
-            { zh: "吗", py: "ma", uz: "so'roq yuklamasi" },
-            { zh: "的", py: "de", uz: "qaratqich kelishigi qo'shimchasi" },
-            { zh: "们", py: "men", uz: "ko'plik qo'shimchasi" },
-            { zh: "谁", py: "shuí", uz: "kim" }
+            { zh: "你", uz: "sen" },
+            { zh: "我", uz: "men" },
+            { zh: "她", uz: "u (ayol)" },
+            { zh: "他", uz: "u (erkak)" },
+            { zh: "叫", uz: "atalmoq / ismi... bo'lmoq" },
+            { zh: "什么", uz: "nima" },
+            { zh: "名字", uz: "ism" },
+            { zh: "很", uz: "juda" },
+            { zh: "高兴", uz: "xursand" },
+            { zh: "认识", uz: "tanimoq / tanishmoq" },
+            { zh: "哪", uz: "qaysi" },
+            { zh: "国", uz: "davlat / mamlakat" },
+            { zh: "人", uz: "inson / odam" },
+            { zh: "一", uz: "bir" },
+            { zh: "二", uz: "ikki" },
+            { zh: "三", uz: "uch" },
+            { zh: "四", uz: "to'rt" },
+            { zh: "五", uz: "besh" },
+            { zh: "六", uz: "olti" },
+            { zh: "七", uz: "yetti" },
+            { zh: "八", uz: "sakkiz" },
+            { zh: "九", uz: "to'qqiz" },
+            { zh: "十", uz: "o'n" },
+            { zh: "好", uz: "yaxshi" },
+            { zh: "对不起", uz: "kechirasiz / uzr" },
+            { zh: "没关系", uz: "hechqisi yo'q" },
+            { zh: "谢谢", uz: "rahmat" },
+            { zh: "再见", uz: "xayr" },
+            { zh: "中国", uz: "Xitoy" },
+            { zh: "美国", uz: "Amerika" },
+            { zh: "老师", uz: "o'qituvchi" },
+            { zh: "学生", uz: "talaba / o'quvchi" },
+            { zh: "中国人", uz: "xitoylik" },
+            { zh: "美国人", uz: "amerikalik" },
+            { zh: "是", uz: "bo'lmoq (to be)" },
+            { zh: "吗", uz: "so'roq yuklamasi" },
+            { zh: "的", uz: "qaratqich kelishigi qo'shimchasi" },
+            { zh: "们", uz: "ko'plik qo'shimchasi" },
+            { zh: "谁", uz: "kim" }
         ];
 
         let currentIndex = 0;
@@ -157,8 +148,8 @@
             if ('speechSynthesis' in window) {
                 const text = shuffledVocab[currentIndex].zh;
                 const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'zh-CN'; // 设置为中文
-                utterance.rate = 0.8;    // 语速稍慢一点方便听清
+                utterance.lang = 'zh-CN'; 
+                utterance.rate = 0.8;    
                 window.speechSynthesis.speak(utterance);
             }
         }
@@ -178,7 +169,6 @@
 
             const current = shuffledVocab[currentIndex];
             document.getElementById('chinese-word').textContent = current.zh;
-            document.getElementById('pinyin').textContent = current.py;
             document.getElementById('progress-text').textContent = `Savol: ${currentIndex + 1}/${shuffledVocab.length}`;
             document.getElementById('score-text').textContent = `To'g'ri: ${score}`;
             document.getElementById('progress-bar').style.width = `${((currentIndex + 1) / shuffledVocab.length) * 100}%`;
@@ -194,9 +184,7 @@
                 .filter(v => v.uz !== correctAnswer)
                 .map(v => v.uz);
             
-            // Unique wrong answers
             others = [...new Set(others)].sort(() => Math.random() - 0.5).slice(0, 3);
-            
             let options = [correctAnswer, ...others].sort(() => Math.random() - 0.5);
 
             options.forEach(opt => {
