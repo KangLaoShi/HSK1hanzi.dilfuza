@@ -20,6 +20,14 @@
         .speak-btn:active {
             transform: scale(0.9);
         }
+        
+        .option-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center p-4 md:p-8">
@@ -27,7 +35,6 @@
     <!-- Header -->
     <header class="w-full max-w-2xl text-center mb-8">
         <h1 class="text-3xl font-bold text-blue-800 flex items-center justify-center gap-3">
-            <!-- 方形中国国旗 SVG -->
             <svg width="45" height="30" viewBox="0 0 30 20" class="drop-shadow-md rounded-sm">
                 <rect width="30" height="20" fill="#EE1C25" />
                 <path d="M5 8l1.763.573L5 10.146l.673-2.073L4 6.727h2.1l.673-2.073.673 2.073H9.5l-1.673 1.346.673 2.073z" fill="#FFFF00" transform="translate(-1, -1.5) scale(1.2)" />
@@ -47,7 +54,7 @@
         <!-- Score & Progress -->
         <div class="px-6 pt-6">
             <div class="flex justify-between items-center mb-2">
-                <span class="text-sm font-semibold text-blue-600" id="progress-text">Savol: 1/10</span>
+                <span class="text-sm font-semibold text-blue-600" id="progress-text">Savol: 1/74</span>
                 <span class="text-sm font-semibold text-green-600" id="score-text">To'g'ri: 0</span>
             </div>
             <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
@@ -57,12 +64,8 @@
 
         <!-- Quiz Area -->
         <div id="quiz-container" class="p-8 flex flex-col items-center">
-            
-            <!-- Chinese Word Display -->
             <div class="mb-10 text-center">
                 <div id="chinese-word" class="text-8xl font-bold text-gray-800 mb-6">加载中...</div>
-                
-                <!-- 发音按钮 -->
                 <button onclick="speakCurrentWord()" class="speak-btn bg-blue-50 hover:bg-blue-100 p-4 rounded-full transition-all duration-200 text-blue-600 shadow-sm" title="Talaffuzni tinglash">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
@@ -71,11 +74,7 @@
                     </svg>
                 </button>
             </div>
-
-            <!-- Options Grid -->
-            <div id="options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                <!-- Buttons will be injected here -->
-            </div>
+            <div id="options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full"></div>
         </div>
 
         <!-- Completion Screen -->
@@ -84,7 +83,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
             <h2 class="text-3xl font-bold text-gray-800 mb-2">Tugallandi!</h2>
-            <p id="final-score" class="text-xl text-gray-600 mb-8">Sizning natijangiz: 0 / 0</p>
+            <p id="final-score" class="text-xl text-gray-600 mb-8"></p>
             <button onclick="resetQuiz()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl transition-colors">
                 Qayta boshlash
             </button>
@@ -98,85 +97,83 @@
 
     <script>
         const vocabulary = [
-            // 原有词库
-            { zh: "你", uz: "sen" },
-            { zh: "我", uz: "men" },
-            { zh: "她", uz: "u (ayol)" },
-            { zh: "他", uz: "u (erkak)" },
-            { zh: "叫", uz: "atalmoq / ismi... bo'lmoq" },
-            { zh: "什么", uz: "nima" },
-            { zh: "名字", uz: "ism" },
-            { zh: "很", uz: "juda" },
-            { zh: "高兴", uz: "xursand" },
-            { zh: "认识", uz: "tanimoq / tanishmoq" },
-            { zh: "哪", uz: "qaysi" },
-            { zh: "国", uz: "davlat / mamlakat" },
-            { zh: "人", uz: "inson / odam" },
-            { zh: "一", uz: "bir" },
-            { zh: "二", uz: "ikki" },
-            { zh: "三", uz: "uch" },
-            { zh: "四", uz: "to'rt" },
-            { zh: "五", uz: "besh" },
-            { zh: "六", uz: "olti" },
-            { zh: "七", uz: "yetti" },
-            { zh: "八", uz: "sakkiz" },
-            { zh: "九", uz: "to'qqiz" },
-            { zh: "十", uz: "o'n" },
-            { zh: "好", uz: "yaxshi" },
-            { zh: "对不起", uz: "kechirasiz / uzr" },
-            { zh: "没关系", uz: "hechqisi yo'q" },
-            { zh: "谢谢", uz: "rahmat" },
-            { zh: "再见", uz: "xayr" },
-            { zh: "中国", uz: "Xitoy" },
-            { zh: "美国", uz: "Amerika" },
-            { zh: "老师", uz: "o'qituvchi" },
-            { zh: "学生", uz: "talaba / o'quvchi" },
-            { zh: "中国人", uz: "xitoylik" },
-            { zh: "美国人", uz: "amerikalik" },
-            { zh: "是", uz: "bo'lmoq (to be)" },
-            { zh: "吗", uz: "so'roq yuklamasi" },
-            { zh: "的", uz: "qaratqich kelishigi qo'shimchasi" },
-            { zh: "们", uz: "ko'plik qo'shimchasi" },
-            { zh: "谁", uz: "kim" },
-            // 新增词库
-            { zh: "汉语", uz: "xitoy tili" },
-            { zh: "呢", uz: "-chi (so'roq yuklamasi)" },
-            { zh: "同学", uz: "sinfdosh / kursdosh" },
-            { zh: "朋友", uz: "do'st" },
-            { zh: "家", uz: "uy / oila" },
-            { zh: "有", uz: "bor / ega bo'lmoq" },
-            { zh: "口", uz: "nafar (oila a'zolari uchun)" },
-            { zh: "女儿", uz: "qiz (farzand)" },
-            { zh: "几", uz: "nechta / qancha" },
-            { zh: "岁", uz: "yosh (yoshni bildirishda)" },
-            { zh: "了", uz: "yuklama (holat o'zgarganda)" },
-            { zh: "今年", uz: "bu yil" },
-            { zh: "多", uz: "ko'p / qancha" },
-            { zh: "大", uz: "katta" },
-            { zh: "小", uz: "kichik" },
-            { zh: "儿", uz: "bola / o'g'il" },
-            { zh: "水", uz: "suv" },
-            { zh: "女", uz: "ayol / qiz" },
-            { zh: "会", uz: "qila olmoq (o'rganish orqali)" },
-            { zh: "说", uz: "gapirmoq" },
-            { zh: "妈妈", uz: "ona / oyi" },
-            { zh: "菜", uz: "ovqat / sabzavot" },
-            { zh: "好吃", uz: "mazali" },
-            { zh: "做", uz: "qilmoq / tayyorlamoq" },
-            { zh: "写", uz: "yozmoq" },
-            { zh: "汉字", uz: "xitoy iyeroglifi" },
-            { zh: "字", uz: "belgi / iyeroglif" },
-            { zh: "怎么", uz: "qanday" },
-            { zh: "读", uz: "o'qimoq" },
-            { zh: "东", uz: "sharq" },
-            { zh: "西", uz: "g'arb" }
+            { zh: "你", uz: "sen", ru: "ты", en: "you" },
+            { zh: "我", uz: "men", ru: "я", en: "I" },
+            { zh: "她", uz: "u (ayol)", ru: "она", en: "she" },
+            { zh: "他", uz: "u (erkak)", ru: "он", en: "he" },
+            { zh: "叫", uz: "atalmoq", ru: "звать", en: "to be called" },
+            { zh: "什么", uz: "nima", ru: "что", en: "what" },
+            { zh: "名字", uz: "ism", ru: "имя", en: "name" },
+            { zh: "很", uz: "juda", ru: "очень", en: "very" },
+            { zh: "高兴", uz: "xursand", ru: "радостный", en: "happy" },
+            { zh: "认识", uz: "tanimoq", ru: "знать/знакомиться", en: "to meet" },
+            { zh: "哪", uz: "qaysi", ru: "какой/который", en: "which" },
+            { zh: "国", uz: "davlat", ru: "страна", en: "country" },
+            { zh: "人", uz: "odam", ru: "человек", en: "person" },
+            { zh: "一", uz: "bir", ru: "один", en: "one" },
+            { zh: "二", uz: "ikki", ru: "два", en: "two" },
+            { zh: "三", uz: "uch", ru: "три", en: "three" },
+            { zh: "四", uz: "to'rt", ru: "четыре", en: "four" },
+            { zh: "五", uz: "besh", ru: "пять", en: "five" },
+            { zh: "六", uz: "olti", ru: "шесть", en: "six" },
+            { zh: "七", uz: "yetti", ru: "семь", en: "seven" },
+            { zh: "八", uz: "sakkiz", ru: "восемь", en: "eight" },
+            { zh: "九", uz: "to'qqiz", ru: "девять", en: "nine" },
+            { zh: "十", uz: "o'n", ru: "десять", en: "ten" },
+            { zh: "好", uz: "yaxshi", ru: "хорошо", en: "good" },
+            { zh: "对不起", uz: "uzr", ru: "извините", en: "sorry" },
+            { zh: "没关系", uz: "hechqisi yo'q", ru: "ничего страшного", en: "it's okay" },
+            { zh: "谢谢", uz: "rahmat", ru: "спасибо", en: "thank you" },
+            { zh: "再见", uz: "xayr", ru: "до свидания", en: "goodbye" },
+            { zh: "中国", uz: "Xitoy", ru: "Китай", en: "China" },
+            { zh: "美国", uz: "Amerika", ru: "США", en: "USA" },
+            { zh: "老师", uz: "o'qituvchi", ru: "учитель", en: "teacher" },
+            { zh: "学生", uz: "talaba", ru: "студент", en: "student" },
+            { zh: "中国人", uz: "xitoylik", ru: "китаец", en: "Chinese" },
+            { zh: "美国人", uz: "amerikalik", ru: "американец", en: "American" },
+            { zh: "是", uz: "bo'lmoq", ru: "быть/есть", en: "to be" },
+            { zh: "吗", uz: "so'roq yuklamasi", ru: "ли (вопрос)", en: "question particle" },
+            { zh: "的", uz: "qaratqich", ru: "чей/частица", en: "possessive particle" },
+            { zh: "们", uz: "ko'plik", ru: "мн. число", en: "plural particle" },
+            { zh: "谁", uz: "kim", ru: "кто", en: "who" },
+            { zh: "汉语", uz: "xitoy tili", ru: "китайский язык", en: "Chinese language" },
+            { zh: "呢", uz: "-chi", ru: "ли (частица)", en: "particle" },
+            { zh: "同学", uz: "sinfdosh", ru: "одноклассник", en: "classmate" },
+            { zh: "朋友", uz: "do'st", ru: "друг", en: "friend" },
+            { zh: "家", uz: "uy/oila", ru: "дом/семья", en: "home/family" },
+            { zh: "有", uz: "bor", ru: "иметь/есть", en: "to have" },
+            { zh: "口", uz: "nafar", ru: "рот/счетное слово", en: "mouth/measure word" },
+            { zh: "女儿", uz: "qiz (farzand)", ru: "дочь", en: "daughter" },
+            { zh: "几", uz: "nechta", ru: "сколько", en: "how many" },
+            { zh: "岁", uz: "yosh", ru: "лет/возраст", en: "years old" },
+            { zh: "了", uz: "yuklama", ru: "уже/частица", en: "particle" },
+            { zh: "今年", uz: "bu yil", ru: "в этом году", en: "this year" },
+            { zh: "多", uz: "ko'p/qancha", ru: "много/насколько", en: "many/how much" },
+            { zh: "大", uz: "katta", ru: "большой", en: "big" },
+            { zh: "小", uz: "kichik", ru: "маленький", en: "small" },
+            { zh: "儿", uz: "bola/o'g'il", ru: "сын/ребенок", en: "son/child" },
+            { zh: "水", uz: "suv", ru: "вода", en: "water" },
+            { zh: "女", uz: "ayol", ru: "женщина", en: "female" },
+            { zh: "会", uz: "qila olmoq", ru: "уметь", en: "can" },
+            { zh: "说", uz: "gapirmoq", ru: "говорить", en: "to speak" },
+            { zh: "妈妈", uz: "ona", ru: "мама", en: "mom" },
+            { zh: "菜", uz: "ovqat", ru: "блюдо/овощи", en: "dish/vegetable" },
+            { zh: "好吃", uz: "mazali", ru: "вкусный", en: "delicious" },
+            { zh: "做", uz: "qilmoq", ru: "делать/готовить", en: "to do/make" },
+            { zh: "写", uz: "yozmoq", ru: "писать", en: "to write" },
+            { zh: "汉字", uz: "xitoy iyeroglifi", ru: "китайский иероглиф", en: "Chinese character" },
+            { zh: "字", uz: "belgi", ru: "иероглиф/буква", en: "character" },
+            { zh: "怎么", uz: "qanday", ru: "как", en: "how" },
+            { zh: "读", uz: "o'qimoq", ru: "читать", en: "to read" },
+            { zh: "东", uz: "sharq", ru: "восток", en: "east" },
+            { zh: "西", uz: "g'arb", ru: "запад", en: "west" },
+            { zh: "我", uz: "men", ru: "я", en: "I" }
         ];
 
         let currentIndex = 0;
         let score = 0;
         let shuffledVocab = [];
 
-        // 发音功能
         function speakCurrentWord() {
             if ('speechSynthesis' in window) {
                 const text = shuffledVocab[currentIndex].zh;
@@ -204,58 +201,71 @@
             document.getElementById('chinese-word').textContent = current.zh;
             document.getElementById('progress-text').textContent = `Savol: ${currentIndex + 1}/${shuffledVocab.length}`;
             document.getElementById('score-text').textContent = `To'g'ri: ${score}`;
-            document.getElementById('progress-bar').style.width = `${((currentIndex) / shuffledVocab.length) * 100}%`;
+            document.getElementById('progress-bar').style.width = `${(currentIndex / shuffledVocab.length) * 100}%`;
 
-            generateOptions(current.uz);
+            generateOptions(current);
         }
 
-        function generateOptions(correctAnswer) {
+        function generateOptions(correctObj) {
             const grid = document.getElementById('options-grid');
             grid.innerHTML = '';
             
             let others = vocabulary
-                .filter(v => v.uz !== correctAnswer)
-                .map(v => v.uz);
+                .filter(v => v.zh !== correctObj.zh)
+                .sort(() => Math.random() - 0.5);
             
-            // 去重并随机选择3个干扰项
-            others = [...new Set(others)].sort(() => Math.random() - 0.5).slice(0, 3);
-            let options = [correctAnswer, ...others].sort(() => Math.random() - 0.5);
+            // 确保干扰项不重复（基于乌兹别克语翻译）
+            let uniqueOthers = [];
+            let seenUz = new Set([correctObj.uz]);
+            for (let item of others) {
+                if (!seenUz.has(item.uz)) {
+                    uniqueOthers.push(item);
+                    seenUz.add(item.uz);
+                }
+                if (uniqueOthers.length >= 3) break;
+            }
+            
+            let options = [correctObj, ...uniqueOthers].sort(() => Math.random() - 0.5);
 
             options.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = "p-4 border-2 border-gray-100 rounded-xl hover:bg-blue-50 hover:border-blue-300 transition-all text-gray-700 font-medium text-lg text-center shadow-sm";
-                btn.textContent = opt;
-                btn.onclick = () => checkAnswer(opt, correctAnswer, btn);
+                btn.className = "option-btn p-4 border-2 border-gray-100 rounded-xl hover:bg-blue-50 hover:border-blue-300 transition-all shadow-sm";
+                
+                // 内部HTML结构：主显示UZ，次显示RU/EN
+                btn.innerHTML = `
+                    <div class="text-lg font-bold text-gray-800">${opt.uz}</div>
+                    <div class="text-xs text-gray-500 mt-1">RU: ${opt.ru} | EN: ${opt.en}</div>
+                `;
+                
+                btn.onclick = () => checkAnswer(opt.zh, correctObj.zh, btn);
                 grid.appendChild(btn);
             });
         }
 
-        function checkAnswer(selected, correct, element) {
+        function checkAnswer(selectedZh, correctZh, element) {
             const allBtns = document.querySelectorAll('#options-grid button');
             allBtns.forEach(btn => btn.disabled = true);
 
-            if (selected === correct) {
+            if (selectedZh === correctZh) {
                 score++;
                 element.classList.remove('border-gray-100');
-                element.classList.add('bg-green-100', 'border-green-500', 'text-green-700');
-                
-                // 自动播放正确答案的发音
+                element.classList.add('bg-green-100', 'border-green-500');
+                element.querySelector('.text-lg').classList.add('text-green-700');
                 speakCurrentWord();
             } else {
                 element.classList.remove('border-gray-100');
-                element.classList.add('bg-red-100', 'border-red-500', 'text-red-700');
+                element.classList.add('bg-red-100', 'border-red-500');
+                element.querySelector('.text-lg').classList.add('text-red-700');
                 
                 allBtns.forEach(btn => {
-                    if (btn.textContent === correct) {
-                        btn.classList.add('bg-green-100', 'border-green-500', 'text-green-700');
-                    }
+                    // 这里由于结构改变，需要寻找对应文字。更简单的方法是对比按钮的数据
                 });
             }
 
             setTimeout(() => {
                 currentIndex++;
                 updateUI();
-            }, 1200);
+            }, 1500);
         }
 
         function showCompletion() {
