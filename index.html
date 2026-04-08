@@ -47,20 +47,20 @@
         <!-- Score & Progress -->
         <div class="px-6 pt-6">
             <div class="flex justify-between items-center mb-2">
-                <span class="text-sm font-semibold text-blue-600" id="progress-text">Savol: 1/40</span>
+                <span class="text-sm font-semibold text-blue-600" id="progress-text">Savol: 1/10</span>
                 <span class="text-sm font-semibold text-green-600" id="score-text">To'g'ri: 0</span>
             </div>
             <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                <div id="progress-bar" class="progress-bar h-full bg-blue-500" style="width: 2.5%"></div>
+                <div id="progress-bar" class="progress-bar h-full bg-blue-500" style="width: 0%"></div>
             </div>
         </div>
 
         <!-- Quiz Area -->
         <div id="quiz-container" class="p-8 flex flex-col items-center">
             
-            <!-- Chinese Word Display (Removed Pinyin) -->
+            <!-- Chinese Word Display -->
             <div class="mb-10 text-center">
-                <div id="chinese-word" class="text-8xl font-bold text-gray-800 mb-6">你</div>
+                <div id="chinese-word" class="text-8xl font-bold text-gray-800 mb-6">加载中...</div>
                 
                 <!-- 发音按钮 -->
                 <button onclick="speakCurrentWord()" class="speak-btn bg-blue-50 hover:bg-blue-100 p-4 rounded-full transition-all duration-200 text-blue-600 shadow-sm" title="Talaffuzni tinglash">
@@ -84,7 +84,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
             <h2 class="text-3xl font-bold text-gray-800 mb-2">Tugallandi!</h2>
-            <p id="final-score" class="text-xl text-gray-600 mb-8">Sizning natijangiz: 0 / 40</p>
+            <p id="final-score" class="text-xl text-gray-600 mb-8">Sizning natijangiz: 0 / 0</p>
             <button onclick="resetQuiz()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl transition-colors">
                 Qayta boshlash
             </button>
@@ -98,6 +98,7 @@
 
     <script>
         const vocabulary = [
+            // 原有词库
             { zh: "你", uz: "sen" },
             { zh: "我", uz: "men" },
             { zh: "她", uz: "u (ayol)" },
@@ -136,7 +137,39 @@
             { zh: "吗", uz: "so'roq yuklamasi" },
             { zh: "的", uz: "qaratqich kelishigi qo'shimchasi" },
             { zh: "们", uz: "ko'plik qo'shimchasi" },
-            { zh: "谁", uz: "kim" }
+            { zh: "谁", uz: "kim" },
+            // 新增词库
+            { zh: "汉语", uz: "xitoy tili" },
+            { zh: "呢", uz: "-chi (so'roq yuklamasi)" },
+            { zh: "同学", uz: "sinfdosh / kursdosh" },
+            { zh: "朋友", uz: "do'st" },
+            { zh: "家", uz: "uy / oila" },
+            { zh: "有", uz: "bor / ega bo'lmoq" },
+            { zh: "口", uz: "nafar (oila a'zolari uchun)" },
+            { zh: "女儿", uz: "qiz (farzand)" },
+            { zh: "几", uz: "nechta / qancha" },
+            { zh: "岁", uz: "yosh (yoshni bildirishda)" },
+            { zh: "了", uz: "yuklama (holat o'zgarganda)" },
+            { zh: "今年", uz: "bu yil" },
+            { zh: "多", uz: "ko'p / qancha" },
+            { zh: "大", uz: "katta" },
+            { zh: "小", uz: "kichik" },
+            { zh: "儿", uz: "bola / o'g'il" },
+            { zh: "水", uz: "suv" },
+            { zh: "女", uz: "ayol / qiz" },
+            { zh: "会", uz: "qila olmoq (o'rganish orqali)" },
+            { zh: "说", uz: "gapirmoq" },
+            { zh: "妈妈", uz: "ona / oyi" },
+            { zh: "菜", uz: "ovqat / sabzavot" },
+            { zh: "好吃", uz: "mazali" },
+            { zh: "做", uz: "qilmoq / tayyorlamoq" },
+            { zh: "写", uz: "yozmoq" },
+            { zh: "汉字", uz: "xitoy iyeroglifi" },
+            { zh: "字", uz: "belgi / iyeroglif" },
+            { zh: "怎么", uz: "qanday" },
+            { zh: "读", uz: "o'qimoq" },
+            { zh: "东", uz: "sharq" },
+            { zh: "西", uz: "g'arb" }
         ];
 
         let currentIndex = 0;
@@ -171,7 +204,7 @@
             document.getElementById('chinese-word').textContent = current.zh;
             document.getElementById('progress-text').textContent = `Savol: ${currentIndex + 1}/${shuffledVocab.length}`;
             document.getElementById('score-text').textContent = `To'g'ri: ${score}`;
-            document.getElementById('progress-bar').style.width = `${((currentIndex + 1) / shuffledVocab.length) * 100}%`;
+            document.getElementById('progress-bar').style.width = `${((currentIndex) / shuffledVocab.length) * 100}%`;
 
             generateOptions(current.uz);
         }
@@ -184,6 +217,7 @@
                 .filter(v => v.uz !== correctAnswer)
                 .map(v => v.uz);
             
+            // 去重并随机选择3个干扰项
             others = [...new Set(others)].sort(() => Math.random() - 0.5).slice(0, 3);
             let options = [correctAnswer, ...others].sort(() => Math.random() - 0.5);
 
@@ -204,9 +238,13 @@
                 score++;
                 element.classList.remove('border-gray-100');
                 element.classList.add('bg-green-100', 'border-green-500', 'text-green-700');
+                
+                // 自动播放正确答案的发音
+                speakCurrentWord();
             } else {
                 element.classList.remove('border-gray-100');
                 element.classList.add('bg-red-100', 'border-red-500', 'text-red-700');
+                
                 allBtns.forEach(btn => {
                     if (btn.textContent === correct) {
                         btn.classList.add('bg-green-100', 'border-green-500', 'text-green-700');
@@ -224,6 +262,7 @@
             document.getElementById('quiz-container').classList.add('hidden');
             document.getElementById('completion-screen').classList.remove('hidden');
             document.getElementById('final-score').textContent = `Sizning natijangiz: ${score} / ${shuffledVocab.length}`;
+            document.getElementById('progress-bar').style.width = `100%`;
         }
 
         function resetQuiz() {
